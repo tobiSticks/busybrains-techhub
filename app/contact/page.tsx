@@ -39,14 +39,9 @@ export default function ContactPage() {
           <div className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-signal">
             Phone
           </div>
-          <div className="mt-2 text-ink">+234 — add number</div>
+          <div className="mt-2 text-ink">+234 816 116 4007</div>
         </div>
       </div>
-
-      <p className="mt-6 text-xs text-slate">
-        Update the phone number above with your real business contact
-        details before launch.
-      </p>
     </div>
   )
 }
