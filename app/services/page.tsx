@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { SERVICE_CATEGORIES } from "@/lib/services"
+import { ScrollReveal } from "@/components/ScrollReveal"
 
 export const metadata = {
   title: "Services — BusyBrains Tech-Hub",
@@ -8,20 +9,27 @@ export const metadata = {
 export default function ServicesPage() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
-      <div className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.2em] text-signal">
-        Full service index
-      </div>
-      <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-bold tracking-tight sm:text-5xl">
-        Every case starts here
-      </h1>
-      <p className="mt-5 max-w-xl text-slate">
-        Pick the category closest to what's going on. You'll confirm specifics
-        on the next step, and the right specialists pick it up from there.
-      </p>
+      <ScrollReveal>
+        <div className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.2em] text-signal">
+          Full service index
+        </div>
+        <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-bold tracking-tight sm:text-5xl">
+          Every case starts here
+        </h1>
+        <p className="mt-5 max-w-xl text-slate">
+          Pick the category closest to what's going on. You'll confirm specifics
+          on the next step, and the right specialists pick it up from there.
+        </p>
+      </ScrollReveal>
 
       <div className="mt-16 space-y-px overflow-hidden rounded-sm border border-ink/10 bg-ink/10">
-        {SERVICE_CATEGORIES.map((cat) => (
-          <div key={cat.id} id={cat.id} className="scroll-mt-24 bg-paper p-7 sm:p-9">
+        {SERVICE_CATEGORIES.map((cat, i) => (
+          <ScrollReveal
+            key={cat.id}
+            id={cat.id}
+            delay={Math.min(i, 4) * 0.05}
+            className="scroll-mt-24 bg-paper p-7 transition-colors hover:bg-paper-dim sm:p-9"
+          >
             <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-widest text-signal">
@@ -35,7 +43,7 @@ export default function ServicesPage() {
 
               <Link
                 href={`/get-started?category=${cat.id}`}
-                className="focus-ring shrink-0 rounded-sm border border-ink/20 px-5 py-2.5 text-center font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider transition-colors hover:border-ink hover:bg-ink hover:text-paper"
+                className="focus-ring shrink-0 rounded-sm border border-ink/20 px-5 py-2.5 text-center font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider transition-all hover:border-ink hover:bg-ink hover:text-paper hover:-translate-y-0.5"
               >
                 Open a {cat.prefix} case →
               </Link>
@@ -52,7 +60,7 @@ export default function ServicesPage() {
                 </li>
               ))}
             </ul>
-          </div>
+          </ScrollReveal>
         ))}
       </div>
     </div>

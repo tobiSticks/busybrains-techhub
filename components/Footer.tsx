@@ -3,7 +3,7 @@ import { SERVICE_CATEGORIES } from "@/lib/services"
 
 export default function Footer() {
   return (
-    <footer className="border-t border-ink/10 bg-ink text-paper">
+    <footer className="border-t border-paper/10 bg-navy-deep text-paper">
       <div className="mx-auto max-w-6xl px-5 py-16">
         <div className="grid gap-12 md:grid-cols-[1.2fr_1fr_1fr]">
           <div>

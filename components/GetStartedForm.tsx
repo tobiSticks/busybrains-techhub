@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { motion } from "framer-motion"
 import { SERVICE_CATEGORIES, RequestType, Urgency } from "@/lib/services"
 
 type FormState = {
@@ -85,19 +86,29 @@ export default function GetStartedForm({ initialCategory }: { initialCategory?: 
 
   if (result) {
     return (
-      <div className="mt-14 rounded-sm border border-ink/10 bg-ink p-8 text-paper sm:p-10">
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.45 }}
+        className="mt-14 rounded-sm border border-ink/10 bg-ink p-8 text-paper sm:p-10"
+      >
         <div className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-signal">
           Case opened
         </div>
-        <div className="mt-3 font-[family-name:var(--font-mono)] text-3xl font-bold tracking-tight text-paper sm:text-4xl">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
+          className="mt-3 font-[family-name:var(--font-mono)] text-3xl font-bold tracking-tight text-paper sm:text-4xl"
+        >
           {result.referenceCode}
-        </div>
+        </motion.div>
         <p className="mt-4 max-w-md text-sm leading-relaxed text-paper/70">
           We've sent a confirmation to <strong className="text-paper">{form.email}</strong>.
           Our team has been notified and will review this case shortly. Keep
           your reference code for any follow-up.
         </p>
-      </div>
+      </motion.div>
     )
   }
 
@@ -130,10 +141,10 @@ export default function GetStartedForm({ initialCategory }: { initialCategory?: 
                 type="button"
                 key={cat.id}
                 onClick={() => update("serviceCategoryId", cat.id)}
-                className={`focus-ring rounded-sm border px-4 py-3 text-left text-sm transition-colors ${
+                className={`focus-ring rounded-sm border px-4 py-3 text-left text-sm transition-all ${
                   form.serviceCategoryId === cat.id
                     ? "border-ink bg-ink text-paper"
-                    : "border-ink/15 hover:border-ink/40"
+                    : "border-ink/15 hover:border-ink/40 hover:-translate-y-0.5"
                 }`}
               >
                 <span className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest opacity-60">
@@ -153,10 +164,10 @@ export default function GetStartedForm({ initialCategory }: { initialCategory?: 
             <button
               type="button"
               onClick={() => update("requestType", "complaint")}
-              className={`focus-ring rounded-sm border px-4 py-3 text-left text-sm transition-colors ${
+              className={`focus-ring rounded-sm border px-4 py-3 text-left text-sm transition-all ${
                 form.requestType === "complaint"
                   ? "border-ink bg-ink text-paper"
-                  : "border-ink/15 hover:border-ink/40"
+                  : "border-ink/15 hover:border-ink/40 hover:-translate-y-0.5"
               }`}
             >
               <div className="font-medium">Report a problem</div>
@@ -167,10 +178,10 @@ export default function GetStartedForm({ initialCategory }: { initialCategory?: 
             <button
               type="button"
               onClick={() => update("requestType", "service_request")}
-              className={`focus-ring rounded-sm border px-4 py-3 text-left text-sm transition-colors ${
+              className={`focus-ring rounded-sm border px-4 py-3 text-left text-sm transition-all ${
                 form.requestType === "service_request"
                   ? "border-ink bg-ink text-paper"
-                  : "border-ink/15 hover:border-ink/40"
+                  : "border-ink/15 hover:border-ink/40 hover:-translate-y-0.5"
               }`}
             >
               <div className="font-medium">Request a service</div>
@@ -192,10 +203,10 @@ export default function GetStartedForm({ initialCategory }: { initialCategory?: 
                   type="button"
                   key={u}
                   onClick={() => update("urgency", u)}
-                  className={`focus-ring rounded-sm border px-4 py-2 font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider transition-colors ${
+                  className={`focus-ring rounded-sm border px-4 py-2 font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider transition-all ${
                     form.urgency === u
                       ? "border-ink bg-ink text-paper"
-                      : "border-ink/15 text-ink/70 hover:border-ink/40"
+                      : "border-ink/15 text-ink/70 hover:border-ink/40 hover:scale-105"
                   }`}
                 >
                   {u}
@@ -219,7 +230,12 @@ export default function GetStartedForm({ initialCategory }: { initialCategory?: 
 
       {/* STEP 2: details */}
       {step >= 2 && (
-        <fieldset className="mt-12 space-y-6 border-t border-ink/10 pt-10">
+        <motion.fieldset
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mt-12 space-y-6 border-t border-ink/10 pt-10"
+        >
           <legend className="font-[family-name:var(--font-display)] text-lg font-bold">
             2. Give us the details
           </legend>
@@ -300,12 +316,17 @@ export default function GetStartedForm({ initialCategory }: { initialCategory?: 
               Continue →
             </button>
           )}
-        </fieldset>
+        </motion.fieldset>
       )}
 
       {/* STEP 3: contact info */}
       {step >= 3 && (
-        <fieldset className="mt-12 space-y-6 border-t border-ink/10 pt-10">
+        <motion.fieldset
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mt-12 space-y-6 border-t border-ink/10 pt-10"
+        >
           <legend className="font-[family-name:var(--font-display)] text-lg font-bold">
             3. How do we reach you?
           </legend>
@@ -374,7 +395,7 @@ export default function GetStartedForm({ initialCategory }: { initialCategory?: 
           >
             {submitting ? "Submitting…" : "Submit case"}
           </button>
-        </fieldset>
+        </motion.fieldset>
       )}
     </form>
   )
