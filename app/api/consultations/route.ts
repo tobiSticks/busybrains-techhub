@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server"
+import { after, NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
 import { z } from "zod"
@@ -68,9 +68,12 @@ export async function POST(req: NextRequest) {
 
     const referenceCode = inserted.reference_code
 
-    // Fire-and-forget email notifications — don't block the response on these.
-    sendNotificationEmails({ ...data, referenceCode }).catch((err) =>
-      console.error("Email notification failed:", err)
+    // Don't block the response on these, but keep the function alive until they finish —
+    // a bare un-awaited promise can get cut off when Vercel freezes the function after the response.
+    after(() =>
+      sendNotificationEmails({ ...data, referenceCode }).catch((err) =>
+        console.error("Email notification failed:", err)
+      )
     )
 
     return NextResponse.json({ referenceCode })
