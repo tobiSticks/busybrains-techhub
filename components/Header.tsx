@@ -45,12 +45,12 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-            <Link
+            {/* <Link
               href="/login"
               className="focus-ring rounded text-sm font-medium text-signal transition-colors hover:text-signal-soft"
             >
               Admin Portal
-            </Link>
+            </Link> */}
             <Link
               href="/get-started"
               className="focus-ring rounded-sm bg-signal px-4 py-2 font-[family-name:var(--font-mono)] text-xs font-medium uppercase tracking-wider text-navy-deep transition-colors hover:bg-signal-soft"
