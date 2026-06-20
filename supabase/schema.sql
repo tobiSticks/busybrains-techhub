@@ -128,18 +128,22 @@ create trigger trg_before_update_consultation
 alter table consultation_requests enable row level security;
 alter table service_categories enable row level security;
 
+drop policy if exists "Public can view service categories" on service_categories;
 create policy "Public can view service categories"
   on service_categories for select
   using (true);
 
+drop policy if exists "Public can submit consultation requests" on consultation_requests;
 create policy "Public can submit consultation requests"
   on consultation_requests for insert
   with check (true);
 
+drop policy if exists "Staff can view all consultation requests" on consultation_requests;
 create policy "Staff can view all consultation requests"
   on consultation_requests for select
   using (auth.role() = 'authenticated');
 
+drop policy if exists "Staff can update consultation requests" on consultation_requests;
 create policy "Staff can update consultation requests"
   on consultation_requests for update
   using (auth.role() = 'authenticated');
@@ -155,6 +159,7 @@ create table if not exists staff_profiles (
 
 alter table staff_profiles enable row level security;
 
+drop policy if exists "Staff can view all profiles" on staff_profiles;
 create policy "Staff can view all profiles"
   on staff_profiles for select
   using (auth.role() = 'authenticated');
@@ -174,10 +179,12 @@ create table if not exists testimonials (
 
 alter table testimonials enable row level security;
 
+drop policy if exists "Public can submit testimonials" on testimonials;
 create policy "Public can submit testimonials"
   on testimonials for insert
   with check (true);
 
+drop policy if exists "Staff can view testimonials" on testimonials;
 create policy "Staff can view testimonials"
   on testimonials for select
   using (auth.role() = 'authenticated');
@@ -193,10 +200,12 @@ create table if not exists newsletter_subscribers (
 
 alter table newsletter_subscribers enable row level security;
 
+drop policy if exists "Public can subscribe to newsletter" on newsletter_subscribers;
 create policy "Public can subscribe to newsletter"
   on newsletter_subscribers for insert
   with check (true);
 
+drop policy if exists "Staff can view newsletter subscribers" on newsletter_subscribers;
 create policy "Staff can view newsletter subscribers"
   on newsletter_subscribers for select
   using (auth.role() = 'authenticated');
