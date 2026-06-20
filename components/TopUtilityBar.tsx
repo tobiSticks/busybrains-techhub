@@ -1,3 +1,5 @@
+import { Mail, Phone } from "lucide-react"
+
 export function TopUtilityBar() {
   return (
     <div className="border-b border-paper/10 bg-navy-deep">
@@ -13,10 +15,18 @@ export function TopUtilityBar() {
           <span>Abuja, Nigeria</span>
         </div>
         <div className="flex items-center gap-4">
-          <a href="tel:+2348161164007" className="focus-ring rounded hover:text-paper">
+          <a
+            href="tel:+2348161164007"
+            className="focus-ring flex items-center gap-1.5 rounded hover:text-paper"
+          >
+            <Phone className="h-3 w-3" aria-hidden />
             +234 816 116 4007
           </a>
-          <a href="mailto:info@busybrainstech-hub.com.ng" className="focus-ring rounded hover:text-paper">
+          <a
+            href="mailto:info@busybrainstech-hub.com.ng"
+            className="focus-ring flex items-center gap-1.5 rounded hover:text-paper"
+          >
+            <Mail className="h-3 w-3" aria-hidden />
             info@busybrainstech-hub.com.ng
           </a>
         </div>
