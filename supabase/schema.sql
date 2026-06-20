@@ -160,6 +160,48 @@ create policy "Staff can view all profiles"
   using (auth.role() = 'authenticated');
 
 -- ============================================================
+-- 6. TESTIMONIALS (public feedback form — separate from case tracking)
+-- ============================================================
+create table if not exists testimonials (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  role text,
+  company text,
+  rating int not null check (rating between 1 and 5),
+  message text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table testimonials enable row level security;
+
+create policy "Public can submit testimonials"
+  on testimonials for insert
+  with check (true);
+
+create policy "Staff can view testimonials"
+  on testimonials for select
+  using (auth.role() = 'authenticated');
+
+-- ============================================================
+-- 7. NEWSLETTER SUBSCRIBERS
+-- ============================================================
+create table if not exists newsletter_subscribers (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique,
+  created_at timestamptz not null default now()
+);
+
+alter table newsletter_subscribers enable row level security;
+
+create policy "Public can subscribe to newsletter"
+  on newsletter_subscribers for insert
+  with check (true);
+
+create policy "Staff can view newsletter subscribers"
+  on newsletter_subscribers for select
+  using (auth.role() = 'authenticated');
+
+-- ============================================================
 -- DONE. After running this:
 -- 1. Go to Authentication > Users in Supabase dashboard
 -- 2. Manually create 2 users (your email + admin's email) with passwords
