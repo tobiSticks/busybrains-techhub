@@ -3,6 +3,10 @@ import { SERVICE_CATEGORIES } from "@/lib/services"
 import { HeroLogoWatermark, HeroTerminal } from "@/components/HeroVisual"
 import { ScrollReveal } from "@/components/ScrollReveal"
 import { ServiceMarquee } from "@/components/ServiceMarquee"
+import { TrustBadges } from "@/components/TrustBadges"
+import { StatsBar } from "@/components/StatsBar"
+import { FaqAccordion } from "@/components/FaqAccordion"
+import { TestimonialForm } from "@/components/TestimonialForm"
 import Testimonials from "@/components/Testimonials"
 
 export default function Home() {
@@ -67,18 +71,33 @@ export default function Home() {
 
       <ServiceMarquee />
 
+      <TrustBadges />
+
       {/* SERVICE GRID */}
       <section className="mx-auto max-w-6xl px-5 py-20">
-        <ScrollReveal>
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight sm:text-3xl">
+        <ScrollReveal className="text-center">
+          <div className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-signal">
+            Our Specialties
+          </div>
+          <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight sm:text-3xl">
+            Comprehensive Technology Delivery
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-slate">
+            We combine careful security practices with fluid modern design to
+            keep your enterprise moving.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.1}>
+          <div className="mt-12 flex items-end justify-between gap-4">
+            <h3 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
               What we handle
-            </h2>
+            </h3>
             <Link
               href="/services"
               className="focus-ring hidden shrink-0 rounded font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-slate hover:text-ink sm:block"
             >
-              Full list →
+              View all {SERVICE_CATEGORIES.reduce((n, c) => n + c.items.length, 0)} dedicated services →
             </Link>
           </div>
         </ScrollReveal>
@@ -109,6 +128,8 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <StatsBar />
 
       {/* HOW IT WORKS */}
       <section className="border-t border-ink/10 bg-paper-dim">
@@ -153,6 +174,38 @@ export default function Home() {
       </section>
 
       <Testimonials />
+
+      {/* TESTIMONIAL SUBMISSION */}
+      <section className="mx-auto max-w-3xl px-5 py-20">
+        <ScrollReveal className="text-center">
+          <div className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-signal">
+            Client Testimonials
+          </div>
+          <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight sm:text-3xl">
+            What Tech Leaders Say
+          </h2>
+        </ScrollReveal>
+        <ScrollReveal delay={0.1} className="mt-10">
+          <TestimonialForm />
+        </ScrollReveal>
+      </section>
+
+      {/* FAQ */}
+      <section className="border-t border-ink/10 bg-paper-dim py-20">
+        <div className="px-5">
+          <ScrollReveal className="mx-auto max-w-3xl text-center">
+            <div className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-signal">
+              Got Questions?
+            </div>
+            <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight sm:text-3xl">
+              Frequently Inquired Details
+            </h2>
+          </ScrollReveal>
+          <div className="mt-10">
+            <FaqAccordion />
+          </div>
+        </div>
+      </section>
 
       {/* CTA */}
       <section className="mx-auto max-w-6xl px-5 py-24 text-center">

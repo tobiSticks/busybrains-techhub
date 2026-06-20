@@ -11,14 +11,16 @@ export default function ServicesPage() {
     <div className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
       <ScrollReveal>
         <div className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.2em] text-signal">
-          Full service index
+          Our Capabilities Ledger
         </div>
         <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-bold tracking-tight sm:text-5xl">
-          Every case starts here
+          Offered Specialized Services
         </h1>
         <p className="mt-5 max-w-xl text-slate">
-          Pick the category closest to what's going on. You'll confirm specifics
-          on the next step, and the right specialists pick it up from there.
+          We construct complete, modular technical frameworks for Nigerian
+          enterprise scales. Pick the category closest to what&apos;s going
+          on — you&apos;ll confirm specifics on the next step, and the right
+          specialists pick it up from there.
         </p>
       </ScrollReveal>
 
