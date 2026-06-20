@@ -2,6 +2,7 @@ import Link from "next/link"
 import { SERVICE_CATEGORIES } from "@/lib/services"
 import { HeroLogoWatermark, HeroTerminal } from "@/components/HeroVisual"
 import { ScrollReveal } from "@/components/ScrollReveal"
+import { ServiceMarquee } from "@/components/ServiceMarquee"
 import Testimonials from "@/components/Testimonials"
 
 export default function Home() {
@@ -63,6 +64,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <ServiceMarquee />
 
       {/* SERVICE GRID */}
       <section className="mx-auto max-w-6xl px-5 py-20">
