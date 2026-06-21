@@ -2,10 +2,7 @@ import { after, NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
 import { z } from "zod"
-
-const SUPPORT_PHONE_DISPLAY = "+234 816 116 4007"
-const SUPPORT_PHONE_TEL = "+2348161164007"
-const SUPPORT_EMAIL = "info@busybrainstech-hub.com.ng"
+import { emailShell, escapeHtml } from "@/lib/email-templates"
 
 const bodySchema = z.object({
   fullName: z.string().min(2),
@@ -168,13 +165,6 @@ View in dashboard: ${process.env.NEXT_PUBLIC_SITE_URL || ""}/dashboard`,
   }
 }
 
-function escapeHtml(value: string) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-}
-
 function buildClientConfirmationHtml(payload: {
   fullName: string
   subject: string
@@ -184,54 +174,21 @@ function buildClientConfirmationHtml(payload: {
   const subject = escapeHtml(payload.subject)
   const referenceCode = escapeHtml(payload.referenceCode)
 
-  return `<!DOCTYPE html>
-<html>
-  <body style="margin:0;padding:0;background:#EDEAE2;font-family:Inter,Arial,Helvetica,sans-serif;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#EDEAE2;padding:24px 0;">
-      <tr>
-        <td align="center">
-          <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#F7F5F0;max-width:600px;width:100%;">
-            <tr>
-              <td style="background:#081A33;padding:12px 28px;">
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                  <tr>
-                    <td style="font-size:13px;color:#F7F5F0;">
-                      <span style="margin-right:18px;white-space:nowrap;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F7F5F0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;" aria-hidden="true"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>
-                        <a href="tel:${SUPPORT_PHONE_TEL}" style="color:#F7F5F0;text-decoration:none;">${SUPPORT_PHONE_DISPLAY}</a>
-                      </span>
-                      <span style="white-space:nowrap;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F7F5F0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;" aria-hidden="true"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
-                        <a href="mailto:${SUPPORT_EMAIL}" style="color:#F7F5F0;text-decoration:none;">${SUPPORT_EMAIL}</a>
-                      </span>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:32px 28px;color:#0E2A4D;font-size:15px;line-height:1.6;">
-                <p style="margin:0 0 16px;">Dear ${fullName},</p>
-                <p style="margin:0 0 16px;">Thank you for contacting BusyBrains Tech-Hub. We have successfully opened your support case.</p>
-                <p style="margin:0 0 16px;">
-                  <strong>Case Reference ID:</strong> ${referenceCode}<br/>
-                  <strong>Summary:</strong> ${subject}
-                </p>
-                <p style="margin:0 0 16px;">Our team will review your request and get back to you as soon as possible. We will contact you at this email address or the phone number provided, if applicable.</p>
-                <p style="margin:0 0 16px;">Please keep your case reference ID for any future correspondence.</p>
-                <p style="margin:0 0 16px;">If you have any additional information that may help us, feel free to reply to this email.</p>
-                <p style="margin:0 0 24px;">Thank you for choosing BusyBrains Tech-Hub.</p>
-                <p style="margin:0;">
-                  Best regards,<br/>
-                  <strong>BusyBrains Tech-Hub Corporate Services</strong><br/>
-                  We're here to help.
-                </p>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>`
+  return emailShell(`
+    <p style="margin:0 0 16px;">Dear ${fullName},</p>
+    <p style="margin:0 0 16px;">Thank you for contacting BusyBrains Tech-Hub. We have successfully opened your support case.</p>
+    <p style="margin:0 0 16px;">
+      <strong>Case Reference ID:</strong> ${referenceCode}<br/>
+      <strong>Summary:</strong> ${subject}
+    </p>
+    <p style="margin:0 0 16px;">Our team will review your request and get back to you as soon as possible. We will contact you at this email address or the phone number provided, if applicable.</p>
+    <p style="margin:0 0 16px;">Please keep your case reference ID for any future correspondence.</p>
+    <p style="margin:0 0 16px;">If you have any additional information that may help us, feel free to reply to this email.</p>
+    <p style="margin:0 0 24px;">Thank you for choosing BusyBrains Tech-Hub.</p>
+    <p style="margin:0;">
+      Best regards,<br/>
+      <strong>BusyBrains Tech-Hub Corporate Services</strong><br/>
+      We're here to help.
+    </p>
+  `)
 }

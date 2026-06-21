@@ -9,6 +9,7 @@ import {
   SERVICE_CATEGORIES,
 } from "@/lib/services"
 import { createClient } from "@/lib/supabase/client"
+import CaseResponseForm from "@/components/CaseResponseForm"
 
 const STATUS_COLORS: Record<RequestStatus, string> = {
   new: "bg-signal/20 text-ink border-signal/40",
@@ -201,6 +202,13 @@ export default function CaseList({
                   ))}
                 </div>
               </div>
+
+              <CaseResponseForm
+                caseId={selected.id}
+                clientEmail={selected.email}
+                subject={selected.subject}
+                referenceCode={selected.reference_code}
+              />
 
               <div className="mt-6 font-[family-name:var(--font-mono)] text-xs text-slate">
                 Opened {new Date(selected.created_at).toLocaleString()}
