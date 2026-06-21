@@ -211,6 +211,31 @@
     using (auth.role() = 'authenticated');
 
   -- ============================================================
+  -- 8. CASE RESPONSES (staff replies emailed to the client)
+  -- ============================================================
+  create table if not exists case_responses (
+    id uuid primary key default gen_random_uuid(),
+    consultation_request_id uuid not null references consultation_requests(id) on delete cascade,
+    message text not null,
+    sent_by uuid references auth.users(id),
+    created_at timestamptz not null default now()
+  );
+
+  create index if not exists idx_case_responses_request on case_responses(consultation_request_id);
+
+  alter table case_responses enable row level security;
+
+  drop policy if exists "Staff can view case responses" on case_responses;
+  create policy "Staff can view case responses"
+    on case_responses for select
+    using (auth.role() = 'authenticated');
+
+  drop policy if exists "Staff can send case responses" on case_responses;
+  create policy "Staff can send case responses"
+    on case_responses for insert
+    with check (auth.role() = 'authenticated');
+
+  -- ============================================================
   -- DONE. After running this:
   -- 1. Go to Authentication > Users in Supabase dashboard
   -- 2. Manually create 2 users (your email + admin's email) with passwords
