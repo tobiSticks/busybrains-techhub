@@ -149,9 +149,10 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
   },
 ]
 
-export type RequestType = 'complaint' | 'service_request'
+export type RequestType = 'complaint' | 'service_request' | 'chat_inquiry'
 export type Urgency = 'low' | 'normal' | 'high' | 'urgent'
 export type RequestStatus = 'new' | 'in_review' | 'in_progress' | 'completed'
+export type RequestSource = 'web_form' | 'chat'
 
 export type ConsultationRequest = {
   id: string
@@ -167,10 +168,18 @@ export type ConsultationRequest = {
   preferred_approach: string | null
   urgency: Urgency
   status: RequestStatus
+  source: RequestSource
   assigned_to: string | null
   internal_notes: string | null
   created_at: string
   updated_at: string
+}
+
+// Categories that exist in the database (for FK integrity on chat-originated
+// tickets) but are intentionally excluded from SERVICE_CATEGORIES above so
+// they never appear on the public site or the Get Started form dropdown.
+export const INTERNAL_CATEGORY_LABELS: Record<string, string> = {
+  'general-inquiry': 'General Inquiry',
 }
 
 export const STATUS_LABELS: Record<RequestStatus, string> = {

@@ -236,6 +236,254 @@
     with check (auth.role() = 'authenticated');
 
   -- ============================================================
+  -- 9. LIVE CHAT + UNIFIED TICKETING (Phase 1)
+  -- ============================================================
+
+  -- 9a. Internal-only category for chat tickets that haven't been
+  -- triaged into a real business line yet. Deliberately NOT shown on
+  -- the public site — see lib/services.ts (INTERNAL_CATEGORY_LABELS).
+  insert into service_categories (id, name, prefix, sort_order) values
+    ('general-inquiry', 'General Inquiry', 'GEN', 0)
+  on conflict (id) do nothing;
+
+  -- 9b. Evolve consultation_requests into the unified ticket pipeline:
+  -- track where a ticket came from, and allow a chat-originated request type.
+  alter table consultation_requests add column if not exists source text not null default 'web_form'
+    check (source in ('web_form', 'chat'));
+
+  alter table consultation_requests drop constraint if exists consultation_requests_request_type_check;
+  alter table consultation_requests add constraint consultation_requests_request_type_check
+    check (request_type in ('complaint', 'service_request', 'chat_inquiry'));
+
+  create index if not exists idx_consultation_requests_source on consultation_requests(source);
+
+  -- 9c. is_staff() — security-definer helper. Needed because Supabase
+  -- anonymous-auth sessions (used for chat visitor identity below) still
+  -- carry role = 'authenticated' in their JWT, so the old
+  -- `auth.role() = 'authenticated'` check used throughout this file would
+  -- start admitting anonymous chat visitors into every staff-only table.
+  -- security definer + a pinned search_path avoids both that regression
+  -- and RLS self-recursion when staff_profiles checks its own policy.
+  create or replace function is_staff()
+  returns boolean
+  language sql
+  stable
+  security definer
+  set search_path = public, pg_temp
+  as $$
+    select exists (select 1 from staff_profiles where id = auth.uid());
+  $$;
+
+  -- 9d. Re-point every existing staff-only policy at is_staff() instead
+  -- of auth.role() = 'authenticated'.
+  drop policy if exists "Staff can view all consultation requests" on consultation_requests;
+  create policy "Staff can view all consultation requests"
+    on consultation_requests for select
+    using (is_staff());
+
+  drop policy if exists "Staff can update consultation requests" on consultation_requests;
+  create policy "Staff can update consultation requests"
+    on consultation_requests for update
+    using (is_staff());
+
+  drop policy if exists "Staff can view all profiles" on staff_profiles;
+  create policy "Staff can view all profiles"
+    on staff_profiles for select
+    using (is_staff());
+
+  drop policy if exists "Staff can view testimonials" on testimonials;
+  create policy "Staff can view testimonials"
+    on testimonials for select
+    using (is_staff());
+
+  drop policy if exists "Staff can view newsletter subscribers" on newsletter_subscribers;
+  create policy "Staff can view newsletter subscribers"
+    on newsletter_subscribers for select
+    using (is_staff());
+
+  drop policy if exists "Staff can view case responses" on case_responses;
+  create policy "Staff can view case responses"
+    on case_responses for select
+    using (is_staff());
+
+  drop policy if exists "Staff can send case responses" on case_responses;
+  create policy "Staff can send case responses"
+    on case_responses for insert
+    with check (is_staff());
+
+  -- 9e. Chat visitors — thin profile shim keyed by the visitor's
+  -- Supabase anonymous-auth user id, same pattern as staff_profiles.
+  create table if not exists chat_visitors (
+    id uuid primary key references auth.users(id) on delete cascade,
+    full_name text,
+    email text,
+    created_at timestamptz not null default now()
+  );
+
+  alter table chat_visitors enable row level security;
+
+  drop policy if exists "Visitor can manage own profile" on chat_visitors;
+  create policy "Visitor can manage own profile"
+    on chat_visitors for all
+    using (id = auth.uid())
+    with check (id = auth.uid());
+
+  drop policy if exists "Staff can view chat visitors" on chat_visitors;
+  create policy "Staff can view chat visitors"
+    on chat_visitors for select
+    using (is_staff());
+
+  -- 9f. Chat conversations.
+  create table if not exists chat_conversations (
+    id uuid primary key default gen_random_uuid(),
+    visitor_id uuid not null references auth.users(id) on delete cascade,
+    consultation_request_id uuid references consultation_requests(id),
+    status text not null default 'queued' check (status in ('queued', 'active', 'closed')),
+    assigned_to uuid references auth.users(id),
+    last_message_at timestamptz,
+    created_at timestamptz not null default now(),
+    closed_at timestamptz
+  );
+
+  create index if not exists idx_chat_conversations_status on chat_conversations(status);
+  create index if not exists idx_chat_conversations_visitor on chat_conversations(visitor_id);
+  create index if not exists idx_chat_conversations_assigned on chat_conversations(assigned_to);
+
+  alter table chat_conversations enable row level security;
+
+  drop policy if exists "Visitor can view own conversations" on chat_conversations;
+  create policy "Visitor can view own conversations"
+    on chat_conversations for select
+    using (visitor_id = auth.uid());
+
+  drop policy if exists "Visitor can create own conversation" on chat_conversations;
+  create policy "Visitor can create own conversation"
+    on chat_conversations for insert
+    with check (visitor_id = auth.uid());
+
+  drop policy if exists "Staff can view all conversations" on chat_conversations;
+  create policy "Staff can view all conversations"
+    on chat_conversations for select
+    using (is_staff());
+
+  drop policy if exists "Staff can update conversations" on chat_conversations;
+  create policy "Staff can update conversations"
+    on chat_conversations for update
+    using (is_staff());
+
+  -- 9g. Chat messages.
+  create table if not exists chat_messages (
+    id uuid primary key default gen_random_uuid(),
+    conversation_id uuid not null references chat_conversations(id) on delete cascade,
+    sender_type text not null check (sender_type in ('visitor', 'agent', 'system')),
+    sender_id uuid references auth.users(id),
+    body text not null,
+    attachment_url text,
+    attachment_name text,
+    attachment_type text,
+    read_at timestamptz,
+    created_at timestamptz not null default now()
+  );
+
+  create index if not exists idx_chat_messages_conversation_created
+    on chat_messages(conversation_id, created_at);
+
+  alter table chat_messages enable row level security;
+
+  drop policy if exists "Participants can view conversation messages" on chat_messages;
+  create policy "Participants can view conversation messages"
+    on chat_messages for select
+    using (
+      is_staff()
+      or exists (
+        select 1 from chat_conversations c
+        where c.id = chat_messages.conversation_id and c.visitor_id = auth.uid()
+      )
+    );
+
+  drop policy if exists "Participants can send conversation messages" on chat_messages;
+  create policy "Participants can send conversation messages"
+    on chat_messages for insert
+    with check (
+      (sender_type = 'agent' and is_staff() and sender_id = auth.uid())
+      or (
+        sender_type = 'visitor'
+        and sender_id = auth.uid()
+        and exists (
+          select 1 from chat_conversations c
+          where c.id = chat_messages.conversation_id and c.visitor_id = auth.uid()
+        )
+      )
+    );
+
+  drop policy if exists "Participants can mark messages read" on chat_messages;
+  create policy "Participants can mark messages read"
+    on chat_messages for update
+    using (
+      is_staff()
+      or exists (
+        select 1 from chat_conversations c
+        where c.id = chat_messages.conversation_id and c.visitor_id = auth.uid()
+      )
+    )
+    with check (true);
+
+  -- 9h. Realtime — both tables need to be in the publication for
+  -- Postgres Changes subscriptions to receive INSERT/UPDATE events.
+  do $$
+  begin
+    if not exists (
+      select 1 from pg_publication_tables
+      where pubname = 'supabase_realtime' and tablename = 'chat_messages'
+    ) then
+      alter publication supabase_realtime add table chat_messages;
+    end if;
+    if not exists (
+      select 1 from pg_publication_tables
+      where pubname = 'supabase_realtime' and tablename = 'chat_conversations'
+    ) then
+      alter publication supabase_realtime add table chat_conversations;
+    end if;
+  end $$;
+
+  -- 9i. Storage bucket for chat file/image attachments. Private bucket;
+  -- objects are path-scoped as {conversation_id}/{filename} (NOT by
+  -- uploader id) — an attachment belongs to the conversation, and both
+  -- participants (the visitor and whichever agent replies) need to read
+  -- it regardless of who uploaded it.
+  insert into storage.buckets (id, name, public)
+  values ('chat-attachments', 'chat-attachments', false)
+  on conflict (id) do nothing;
+
+  drop policy if exists "Participants can upload attachments" on storage.objects;
+  create policy "Participants can upload attachments"
+    on storage.objects for insert
+    with check (
+      bucket_id = 'chat-attachments'
+      and (
+        is_staff()
+        or exists (
+          select 1 from chat_conversations c
+          where c.id::text = (storage.foldername(name))[1] and c.visitor_id = auth.uid()
+        )
+      )
+    );
+
+  drop policy if exists "Participants can read attachments" on storage.objects;
+  create policy "Participants can read attachments"
+    on storage.objects for select
+    using (
+      bucket_id = 'chat-attachments'
+      and (
+        is_staff()
+        or exists (
+          select 1 from chat_conversations c
+          where c.id::text = (storage.foldername(name))[1] and c.visitor_id = auth.uid()
+        )
+      )
+    );
+
+  -- ============================================================
   -- DONE. After running this:
   -- 1. Go to Authentication > Users in Supabase dashboard
   -- 2. Manually create 2 users (your email + admin's email) with passwords
@@ -243,4 +491,7 @@
   --    insert into staff_profiles (id, display_name, role) values
   --      ('your-uuid-here', 'Tobi', 'employee'),
   --      ('admin-uuid-here', 'Possible', 'admin');
+  -- 4. For live chat to work, go to Authentication > Sign In / Providers
+  --    and enable "Anonymous sign-ins" — chat visitors are identified by
+  --    an anonymous Supabase auth session, not a regular account.
   -- ============================================================

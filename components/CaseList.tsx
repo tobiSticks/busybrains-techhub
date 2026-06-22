@@ -1,12 +1,14 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { MessageCircle } from "lucide-react"
 import {
   ConsultationRequest,
   RequestStatus,
   STATUS_LABELS,
   STATUS_ORDER,
   SERVICE_CATEGORIES,
+  INTERNAL_CATEGORY_LABELS,
 } from "@/lib/services"
 import { createClient } from "@/lib/supabase/client"
 import CaseResponseForm from "@/components/CaseResponseForm"
@@ -19,7 +21,7 @@ const STATUS_COLORS: Record<RequestStatus, string> = {
 }
 
 function categoryName(id: string) {
-  return SERVICE_CATEGORIES.find((c) => c.id === id)?.name || id
+  return SERVICE_CATEGORIES.find((c) => c.id === id)?.name || INTERNAL_CATEGORY_LABELS[id] || id
 }
 
 export default function CaseList({
@@ -91,7 +93,10 @@ export default function CaseList({
               }`}
             >
               <div className="flex items-center justify-between gap-3">
-                <span className="font-[family-name:var(--font-mono)] text-xs font-medium text-signal">
+                <span className="flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-xs font-medium text-signal">
+                  {r.source === "chat" && (
+                    <MessageCircle className="h-3 w-3 shrink-0" aria-label="Started via live chat" />
+                  )}
                   {r.reference_code}
                 </span>
                 <span
