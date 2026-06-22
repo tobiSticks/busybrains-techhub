@@ -32,6 +32,15 @@ export default function ChatMessageBubble({
           isMine ? "border-ink bg-ink text-paper" : "border-ink/15 bg-paper text-ink"
         }`}
       >
+        {message.sender_type === "bot" && (
+          <div
+            className={`mb-1 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider ${
+              isMine ? "text-paper/60" : "text-slate"
+            }`}
+          >
+            AI Assistant
+          </div>
+        )}
         {message.body && <div className="whitespace-pre-wrap">{message.body}</div>}
         {message.attachment_url && (
           <div className={message.body ? "mt-2" : ""}>

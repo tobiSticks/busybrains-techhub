@@ -12,6 +12,7 @@ import AttachmentUpload from "@/components/AttachmentUpload"
 const CONVERSATION_KEY = "bb_chat_conversation_id"
 
 const STATUS_LABEL: Record<ChatConversation["status"], string> = {
+  bot: "Chatting with our AI assistant",
   queued: "Waiting for an agent…",
   active: "Connected with support",
   closed: "Conversation closed",
@@ -28,6 +29,7 @@ export default function ChatWidget() {
   const [conversation, setConversation] = useState<ChatConversation | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [agentTyping, setAgentTyping] = useState(false)
+  const [botThinking, setBotThinking] = useState(false)
 
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
@@ -144,6 +146,21 @@ export default function ChatWidget() {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" })
   }, [messages, open])
 
+  async function triggerBotResponse(conversationId: string) {
+    setBotThinking(true)
+    try {
+      await fetch("/api/chat/bot-respond", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conversationId }),
+      })
+    } catch {
+      // Best-effort — if this fails, the bot just doesn't reply this turn.
+      // The visitor can still send another message or wait for staff.
+    }
+    setBotThinking(false)
+  }
+
   async function ensureSession() {
     const { data } = await supabase.auth.getSession()
     if (data.session) return data.session.user.id
@@ -186,6 +203,8 @@ export default function ChatWidget() {
       setMessages(history || [])
       setPhase("chat")
       setDraft("")
+
+      if (conv?.status === "bot") triggerBotResponse(conv.id)
     } catch {
       setError("Could not start the chat. Please try again.")
     }
@@ -193,7 +212,7 @@ export default function ChatWidget() {
   }
 
   async function handleSendMessage() {
-    if (!draft.trim() || !conversation || !userId || sending) return
+    if (!draft.trim() || !conversation || !userId || sending || botThinking) return
     setSending(true)
     const body = draft
     setDraft("")
@@ -205,6 +224,8 @@ export default function ChatWidget() {
     })
     if (sendError) setError("Could not send your message.")
     setSending(false)
+
+    if (!sendError && conversation.status === "bot") triggerBotResponse(conversation.id)
   }
 
   function handleDraftChange(value: string) {
@@ -319,6 +340,11 @@ export default function ChatWidget() {
                     Agent is typing…
                   </div>
                 )}
+                {botThinking && (
+                  <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-wider text-slate">
+                    AI assistant is typing…
+                  </div>
+                )}
               </div>
 
               {error && <div className="px-4 pb-1 text-xs text-red-600">{error}</div>}
@@ -335,7 +361,11 @@ export default function ChatWidget() {
               ) : (
                 <div className="flex items-end gap-2 border-t border-ink/10 p-3">
                   {conversation && (
-                    <AttachmentUpload conversationId={conversation.id} onUploaded={handleAttachmentUploaded} />
+                    <AttachmentUpload
+                      conversationId={conversation.id}
+                      onUploaded={handleAttachmentUploaded}
+                      disabled={botThinking}
+                    />
                   )}
                   <textarea
                     value={draft}
@@ -346,13 +376,14 @@ export default function ChatWidget() {
                         handleSendMessage()
                       }
                     }}
+                    disabled={botThinking}
                     placeholder="Type a message…"
                     rows={1}
-                    className="focus-ring flex-1 resize-none rounded-sm border border-ink/15 bg-paper px-3 py-2 text-sm"
+                    className="focus-ring flex-1 resize-none rounded-sm border border-ink/15 bg-paper px-3 py-2 text-sm disabled:opacity-50"
                   />
                   <button
                     onClick={handleSendMessage}
-                    disabled={sending || !draft.trim()}
+                    disabled={sending || botThinking || !draft.trim()}
                     className="focus-ring rounded-sm bg-ink p-2.5 text-paper transition-opacity disabled:opacity-50"
                     aria-label="Send message"
                   >
