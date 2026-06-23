@@ -8,18 +8,21 @@ import ChatMessageBubble from "@/components/ChatMessageBubble"
 import AttachmentUpload from "@/components/AttachmentUpload"
 
 const STATUS_COLORS: Record<ChatConversationStatus, string> = {
+  bot: "bg-ink/5 text-slate border-ink/15",
   queued: "bg-signal/20 text-ink border-signal/40",
   active: "bg-ok/15 text-ok border-ok/40",
   closed: "bg-ink/5 text-slate border-ink/15",
 }
 
 const STATUS_LABELS: Record<ChatConversationStatus, string> = {
+  bot: "With AI",
   queued: "Queued",
   active: "Active",
   closed: "Closed",
 }
 
 const FILTERS: { key: ChatConversationStatus; label: string }[] = [
+  { key: "bot", label: "AI Handling" },
   { key: "queued", label: "Queue" },
   { key: "active", label: "Active" },
   { key: "closed", label: "Closed" },
@@ -316,12 +319,12 @@ export default function ChatDashboard({
                   )}
                 </div>
                 <div className="flex shrink-0 gap-2">
-                  {selected.status === "queued" && (
+                  {(selected.status === "queued" || selected.status === "bot") && (
                     <button
                       onClick={() => claim(selected.id)}
                       className="focus-ring rounded-sm bg-ink px-3 py-1.5 font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider text-paper"
                     >
-                      Claim
+                      {selected.status === "bot" ? "Take over" : "Claim"}
                     </button>
                   )}
                   {selected.status !== "closed" && (

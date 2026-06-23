@@ -77,12 +77,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Could not start the chat." }, { status: 500 })
     }
 
+    const botEnabled = process.env.CHAT_BOT_ENABLED !== "false"
+
     const { data: conversation, error: conversationError } = await supabase
       .from("chat_conversations")
       .insert({
         visitor_id: user.id,
         consultation_request_id: ticket.id,
-        status: "queued",
+        status: botEnabled ? "bot" : "queued",
         last_message_at: new Date().toISOString(),
       })
       .select("id")

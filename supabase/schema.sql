@@ -484,6 +484,27 @@
     );
 
   -- ============================================================
+  -- 10. AI CHATBOT ASSISTANT (Phase 2)
+  -- ============================================================
+
+  -- 10a. New conversations start with the AI bot before reaching a human.
+  -- chat_messages already allows a null sender_id (the bot has no auth.users
+  -- row), so only the check constraints need widening.
+  alter table chat_messages drop constraint if exists chat_messages_sender_type_check;
+  alter table chat_messages add constraint chat_messages_sender_type_check
+    check (sender_type in ('visitor', 'agent', 'system', 'bot'));
+
+  alter table chat_conversations drop constraint if exists chat_conversations_status_check;
+  alter table chat_conversations add constraint chat_conversations_status_check
+    check (status in ('bot', 'queued', 'active', 'closed'));
+
+  -- No new RLS policies needed: the existing "Participants can view
+  -- conversation messages" / is_staff() policies already cover the new
+  -- status/sender_type values for select, and every bot-side write goes
+  -- through the service-role client (app/api/chat/bot-respond), same as
+  -- the ticket-creation path in app/api/chat/start.
+
+  -- ============================================================
   -- DONE. After running this:
   -- 1. Go to Authentication > Users in Supabase dashboard
   -- 2. Manually create 2 users (your email + admin's email) with passwords

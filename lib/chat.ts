@@ -1,7 +1,7 @@
 import { Urgency } from "@/lib/services"
 
-export type ChatConversationStatus = "queued" | "active" | "closed"
-export type ChatSenderType = "visitor" | "agent" | "system"
+export type ChatConversationStatus = "bot" | "queued" | "active" | "closed"
+export type ChatSenderType = "visitor" | "agent" | "system" | "bot"
 
 export type ChatVisitor = {
   id: string
