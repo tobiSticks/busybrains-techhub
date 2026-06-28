@@ -3,6 +3,10 @@ export type ServiceCategory = {
   name: string
   prefix: string
   sortOrder: number
+  /** Core registered pillar (cybersecurity + government contracts). Drives
+   * the featured placement on the homepage and /services — everything else
+   * is demoted to "also through the BusyBrains Hub network". */
+  pillar?: boolean
   blurb: string
   items: string[]
 }
@@ -13,6 +17,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     name: 'Cybersecurity Services',
     prefix: 'CYB',
     sortOrder: 1,
+    pillar: true,
     blurb: 'From breach response to penetration testing, locked down by certified practitioners.',
     items: [
       'Vulnerability Assessment & Penetration Testing (VAPT)',
@@ -51,10 +56,25 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     ],
   },
   {
+    id: 'government-contracts',
+    name: 'Government Contract Services',
+    prefix: 'GOV',
+    sortOrder: 4,
+    pillar: true,
+    blurb: 'Procurement, tenders, and compliance handled by people who know the process.',
+    items: [
+      'Government Procurement Support',
+      'Public Sector Project Execution',
+      'Tender & Bid Preparation',
+      'Contract Management & Compliance',
+      'Supply of Goods and Services to Government Agencies',
+    ],
+  },
+  {
     id: 'digital-marketing',
     name: 'Digital Marketing & Branding',
     prefix: 'DMB',
-    sortOrder: 4,
+    sortOrder: 5,
     blurb: 'Brand identity and growth, run with the same rigor as the rest of the business.',
     items: [
       'Social Media Management',
@@ -68,7 +88,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     id: 'training-consultancy',
     name: 'Training & Consultancy',
     prefix: 'TRN',
-    sortOrder: 5,
+    sortOrder: 6,
     blurb: 'Upskill your team or get a second opinion on a critical project.',
     items: [
       'ICT Training',
@@ -79,31 +99,17 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     ],
   },
   {
-    id: 'government-contracts',
-    name: 'Government Contract Services',
-    prefix: 'GOV',
-    sortOrder: 6,
-    blurb: 'Procurement, tenders, and compliance handled by people who know the process.',
-    items: [
-      'Government Procurement Support',
-      'Public Sector Project Execution',
-      'Tender & Bid Preparation',
-      'Contract Management & Compliance',
-      'Supply of Goods and Services to Government Agencies',
-    ],
-  },
-  {
-    id: 'solar-energy',
-    name: 'Solar Energy Solutions',
-    prefix: 'SOL',
+    id: 'business-corporate',
+    name: 'Business & Corporate Services',
+    prefix: 'BIZ',
     sortOrder: 7,
-    blurb: 'Reliable power, designed and installed for Nigerian conditions.',
+    blurb: 'The operational backbone — HR, planning, and support, outsourced properly.',
     items: [
-      'Solar Panel Installation',
-      'Solar Inverter Systems',
-      'Renewable Energy Consulting',
-      'Solar Maintenance Services',
-      'Hybrid Power Solutions',
+      'Business Development Services',
+      'Human Resource Consulting',
+      'Corporate Support Services',
+      'Project Planning & Management',
+      'Administrative Outsourcing',
     ],
   },
   {
@@ -121,17 +127,17 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     ],
   },
   {
-    id: 'business-corporate',
-    name: 'Business & Corporate Services',
-    prefix: 'BIZ',
+    id: 'solar-energy',
+    name: 'Solar Energy Solutions',
+    prefix: 'SOL',
     sortOrder: 9,
-    blurb: 'The operational backbone — HR, planning, and support, outsourced properly.',
+    blurb: 'Reliable power, designed and installed for Nigerian conditions.',
     items: [
-      'Business Development Services',
-      'Human Resource Consulting',
-      'Corporate Support Services',
-      'Project Planning & Management',
-      'Administrative Outsourcing',
+      'Solar Panel Installation',
+      'Solar Inverter Systems',
+      'Renewable Energy Consulting',
+      'Solar Maintenance Services',
+      'Hybrid Power Solutions',
     ],
   },
   {

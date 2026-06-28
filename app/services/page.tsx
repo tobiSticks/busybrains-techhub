@@ -6,6 +6,9 @@ export const metadata = {
   title: "Services — BusyBrains Tech-Hub",
 }
 
+const PILLAR_CATEGORIES = SERVICE_CATEGORIES.filter((c) => c.pillar)
+const NETWORK_CATEGORIES = SERVICE_CATEGORIES.filter((c) => !c.pillar)
+
 export default function ServicesPage() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
@@ -24,8 +27,14 @@ export default function ServicesPage() {
         </p>
       </ScrollReveal>
 
-      <div className="mt-16 space-y-px overflow-hidden rounded-sm border border-ink/10 bg-ink/10">
-        {SERVICE_CATEGORIES.map((cat, i) => (
+      <ScrollReveal delay={0.05}>
+        <div className="mt-12 font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-signal">
+          Core Pillars
+        </div>
+      </ScrollReveal>
+
+      <div className="mt-4 space-y-px overflow-hidden rounded-sm border border-ink/10 bg-ink/10">
+        {PILLAR_CATEGORIES.map((cat, i) => (
           <ScrollReveal
             key={cat.id}
             id={cat.id}
@@ -52,6 +61,58 @@ export default function ServicesPage() {
             </div>
 
             <ul className="mt-6 grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
+              {cat.items.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-baseline gap-2.5 text-sm text-ink/80"
+                >
+                  <span className="font-[family-name:var(--font-mono)] text-signal">·</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </ScrollReveal>
+        ))}
+      </div>
+
+      <ScrollReveal delay={0.05}>
+        <div className="mt-16 font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-signal">
+          BusyBrains Hub Network
+        </div>
+        <p className="mt-2 max-w-xl text-sm text-slate">
+          Eight more disciplines, available through the same intake and case
+          system as the two pillars above.
+        </p>
+      </ScrollReveal>
+
+      <div className="mt-4 space-y-px overflow-hidden rounded-sm border border-ink/10 bg-ink/10">
+        {NETWORK_CATEGORIES.map((cat, i) => (
+          <ScrollReveal
+            key={cat.id}
+            id={cat.id}
+            delay={Math.min(i, 4) * 0.05}
+            className="scroll-mt-24 bg-paper p-6 transition-colors hover:bg-paper-dim sm:p-7"
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-widest text-slate">
+                  {cat.prefix}
+                </div>
+                <h2 className="mt-1 font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
+                  {cat.name}
+                </h2>
+                <p className="mt-2 max-w-md text-sm text-slate">{cat.blurb}</p>
+              </div>
+
+              <Link
+                href={`/get-started?category=${cat.id}`}
+                className="focus-ring shrink-0 rounded-sm border border-ink/20 px-5 py-2.5 text-center font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider transition-all hover:border-ink hover:bg-ink hover:text-paper hover:-translate-y-0.5"
+              >
+                Open a {cat.prefix} case →
+              </Link>
+            </div>
+
+            <ul className="mt-5 grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
               {cat.items.map((item) => (
                 <li
                   key={item}

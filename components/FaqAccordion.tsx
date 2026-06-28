@@ -9,6 +9,10 @@ const FAQS = [
     a: "A registered Nigerian technology consultancy (CAC RC 9584510) based in Abuja, offering cybersecurity, AI & automation, software development, training, and several other disciplines under one intake process.",
   },
   {
+    q: "What does \"opening a case\" actually mean?",
+    a: "It's a tracked request, not just a contact form. The moment you submit, you get a reference code (e.g. REQ-CYB-0042), a named reviewer looks at it, and it moves through New → In review → In progress → Completed. You can mark it Urgent if it needs to jump the queue — breaches and account compromises usually do.",
+  },
+  {
     q: "Are your platforms compliant with Nigerian data protection laws?",
     a: "Data protection alignment is part of our ongoing operating standard. If you need specifics for a compliance review, open a case via Contact and we'll address it directly with documentation.",
   },

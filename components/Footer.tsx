@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { NewsletterForm } from "@/components/NewsletterForm"
+import { SERVICE_CATEGORIES } from "@/lib/services"
 
 const DELIVERABLES = [
   { label: "Vulnerabilities assessments", href: "/cybersecurity" },
@@ -51,6 +52,12 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
+            <Link
+              href="/services"
+              className="focus-ring mt-4 inline-block rounded font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-signal hover:text-signal-soft"
+            >
+              View all {SERVICE_CATEGORIES.reduce((n, c) => n + c.items.length, 0)} services →
+            </Link>
           </div>
 
           <div>

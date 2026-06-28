@@ -9,6 +9,9 @@ import { FaqAccordion } from "@/components/FaqAccordion"
 import { TestimonialForm } from "@/components/TestimonialForm"
 import Testimonials from "@/components/Testimonials"
 
+const PILLAR_CATEGORIES = SERVICE_CATEGORIES.filter((c) => c.pillar)
+const NETWORK_CATEGORIES = SERVICE_CATEGORIES.filter((c) => !c.pillar)
+
 export default function Home() {
   return (
     <>
@@ -28,10 +31,17 @@ export default function Home() {
               One case file.
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-paper/70">
-              Whether your account was breached, your business needs a website, or
-              a tender is due Friday — every request opens a tracked case, reviewed
-              by our team from intake to close.
+            <p className="mt-5 max-w-xl text-base font-medium text-paper/90">
+              Built on two registered pillars — cybersecurity and government
+              contracts. Eight more disciplines run through the same case
+              system.
+            </p>
+
+            <p className="mt-4 max-w-xl text-lg leading-relaxed text-paper/70">
+              A case is a tracked request, not just a form submission: a
+              reference code on submission, a named reviewer, and a status you
+              can follow from intake to close. Mark it urgent and it&apos;s
+              handled first.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -40,12 +50,6 @@ export default function Home() {
                 className="focus-ring rounded-sm bg-signal px-6 py-3.5 font-[family-name:var(--font-mono)] text-sm font-medium uppercase tracking-wider text-navy-deep transition-colors hover:bg-signal-soft"
               >
                 Open a case
-              </Link>
-              <Link
-                href="/services"
-                className="focus-ring rounded-sm border border-paper/25 px-6 py-3.5 text-sm font-medium text-paper transition-colors hover:border-paper"
-              >
-                See all services
               </Link>
             </div>
           </div>
@@ -77,43 +81,30 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-5 py-20">
         <ScrollReveal className="text-center">
           <div className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-signal">
-            Our Specialties
+            Our Core Pillars
           </div>
           <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight sm:text-3xl">
-            Comprehensive Technology Delivery
+            Cybersecurity & Government Contracts
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-slate">
-            We combine careful security practices with fluid modern design to
-            keep your enterprise moving.
+            What we&apos;re registered and built around. Everything else runs
+            through the same case system as part of the broader BusyBrains
+            Hub network.
           </p>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.1}>
-          <div className="mt-12 flex items-end justify-between gap-4">
-            <h3 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
-              What we handle
-            </h3>
-            <Link
-              href="/services"
-              className="focus-ring hidden shrink-0 rounded font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-slate hover:text-ink sm:block"
-            >
-              View all {SERVICE_CATEGORIES.reduce((n, c) => n + c.items.length, 0)} dedicated services →
-            </Link>
-          </div>
-        </ScrollReveal>
-
-        <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-ink/10 bg-ink/10 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICE_CATEGORIES.map((cat, i) => (
-            <ScrollReveal key={cat.id} delay={(i % 3) * 0.06}>
+        <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-ink/10 bg-ink/10 sm:grid-cols-2">
+          {PILLAR_CATEGORIES.map((cat, i) => (
+            <ScrollReveal key={cat.id} delay={i * 0.06}>
               <Link
                 href={`/services#${cat.id}`}
-                className="focus-ring group flex h-full flex-col justify-between bg-paper p-6 transition-colors hover:bg-ink hover:text-paper"
+                className="focus-ring group flex h-full flex-col justify-between bg-paper p-7 transition-colors hover:bg-ink hover:text-paper sm:p-9"
               >
                 <div>
                   <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-widest text-signal">
-                    {cat.prefix}
+                    {cat.prefix} · Core Pillar
                   </div>
-                  <h3 className="mt-2 font-[family-name:var(--font-display)] text-lg font-bold leading-snug">
+                  <h3 className="mt-2 font-[family-name:var(--font-display)] text-xl font-bold leading-snug">
                     {cat.name}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-slate group-hover:text-paper/60">
@@ -121,6 +112,39 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="mt-6 font-[family-name:var(--font-mono)] text-xs text-slate group-hover:text-signal">
+                  {cat.items.length} services →
+                </div>
+              </Link>
+            </ScrollReveal>
+          ))}
+        </div>
+
+        <ScrollReveal delay={0.1}>
+          <h3 className="mt-16 font-[family-name:var(--font-display)] text-lg font-bold tracking-tight">
+            Also through the BusyBrains Hub network
+          </h3>
+          <p className="mt-2 max-w-xl text-sm text-slate">
+            Eight more disciplines, tracked the same way — same intake, same
+            reference codes.
+          </p>
+        </ScrollReveal>
+
+        <div className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-ink/10 bg-ink/10 sm:grid-cols-2 lg:grid-cols-4">
+          {NETWORK_CATEGORIES.map((cat, i) => (
+            <ScrollReveal key={cat.id} delay={(i % 4) * 0.05}>
+              <Link
+                href={`/services#${cat.id}`}
+                className="focus-ring group flex h-full flex-col justify-between bg-paper-dim p-5 transition-colors hover:bg-ink hover:text-paper"
+              >
+                <div>
+                  <div className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-slate group-hover:text-signal">
+                    {cat.prefix}
+                  </div>
+                  <h4 className="mt-1.5 font-[family-name:var(--font-display)] text-sm font-bold leading-snug">
+                    {cat.name}
+                  </h4>
+                </div>
+                <div className="mt-4 font-[family-name:var(--font-mono)] text-[11px] text-slate group-hover:text-signal">
                   {cat.items.length} services →
                 </div>
               </Link>
