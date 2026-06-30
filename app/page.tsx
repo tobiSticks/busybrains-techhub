@@ -21,7 +21,7 @@ export default function Home() {
       <section className="relative overflow-hidden border-b border-paper/10 bg-gradient-to-b from-navy-deep to-navy">
         <HeroLogoWatermark />
 
-        <div className="relative mx-auto grid max-w-6xl gap-12 px-5 pb-20 pt-16 sm:pt-24 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <div className="relative grid gap-12 pb-20 pl-[60px] pr-5 pt-16 sm:pl-[72px] sm:pr-8 sm:pt-24 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:pl-[88px] lg:pr-12">
           <div>
             <div className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-[0.2em] text-signal">
               Busybrains Tech-Hub Corporate Services Ltd
