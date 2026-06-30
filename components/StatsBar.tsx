@@ -1,11 +1,14 @@
 import { ScrollReveal } from "@/components/ScrollReveal"
+import { SERVICE_CATEGORIES } from "@/lib/services"
 
-// PLACEHOLDER — replace with real, verifiable figures before public launch.
+// Every figure here must be true on its own (system guarantee or public
+// record) — no projected/aspirational numbers (e.g. "120+ projects",
+// "98% satisfaction") until we have real, verifiable data to back them.
 const STATS = [
-  { value: "—", label: "Security scans completed" },
-  { value: "—", label: "Client satisfaction rate" },
-  { value: "RC 9584510", label: "CAC registered & valid" },
-  { value: "Abuja", label: "Active headquarters" },
+  { value: String(SERVICE_CATEGORIES.length), label: "Specialist disciplines, one case system" },
+  { value: "100%", label: "Cases logged with a reference code" },
+  { value: "RC 9584510", label: "CAC registered & active" },
+  { value: "Abuja, FCT", label: "Nigerian headquarters" },
 ]
 
 export function StatsBar() {

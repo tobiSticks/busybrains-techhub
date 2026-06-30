@@ -24,7 +24,7 @@ export default function Header() {
     <header className="sticky top-0 z-50">
       <TopUtilityBar />
       <div className="border-b border-paper/10 bg-navy/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+        <div className="flex items-center justify-between px-5 py-4 sm:px-8 lg:px-12">
           <Link href="/" className="flex items-center gap-2 focus-ring rounded">
             <Image src="/icon.png" alt="BusyBrains Tech-Hub" width={32} height={32} />
             <span className="font-[family-name:var(--font-display)] text-lg font-bold tracking-tight text-paper">
