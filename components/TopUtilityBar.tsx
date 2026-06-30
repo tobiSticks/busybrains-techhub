@@ -3,7 +3,7 @@ import { Mail, Phone } from "lucide-react"
 export function TopUtilityBar() {
   return (
     <div className="border-b border-paper/10 bg-navy-deep">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-5 py-2 font-[family-name:var(--font-mono)] text-[11px] text-paper/60">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-2 font-[family-name:var(--font-mono)] text-[11px] text-paper/60 sm:px-8 lg:px-12">
         <div className="flex items-center gap-2">
           <span className="flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-ok" />

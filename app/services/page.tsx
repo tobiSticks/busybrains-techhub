@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { SERVICE_CATEGORIES } from "@/lib/services"
 import { ScrollReveal } from "@/components/ScrollReveal"
+import { SERVICE_ICONS } from "@/lib/serviceIcons"
 
 export const metadata = {
   title: "Services — BusyBrains Tech-Hub",
@@ -34,7 +35,9 @@ export default function ServicesPage() {
       </ScrollReveal>
 
       <div className="mt-4 space-y-px overflow-hidden rounded-sm border border-ink/10 bg-ink/10">
-        {PILLAR_CATEGORIES.map((cat, i) => (
+        {PILLAR_CATEGORIES.map((cat, i) => {
+          const Icon = SERVICE_ICONS[cat.id]
+          return (
           <ScrollReveal
             key={cat.id}
             id={cat.id}
@@ -42,14 +45,19 @@ export default function ServicesPage() {
             className="scroll-mt-24 bg-paper p-7 transition-colors hover:bg-paper-dim sm:p-9"
           >
             <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-widest text-signal">
-                  {cat.prefix}
+              <div className="flex gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-ink/5 text-ink">
+                  <Icon className="h-5 w-5" aria-hidden />
                 </div>
-                <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight">
-                  {cat.name}
-                </h2>
-                <p className="mt-2 max-w-md text-sm text-slate">{cat.blurb}</p>
+                <div>
+                  <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-widest text-signal">
+                    {cat.prefix}
+                  </div>
+                  <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight">
+                    {cat.name}
+                  </h2>
+                  <p className="mt-2 max-w-md text-sm text-slate">{cat.blurb}</p>
+                </div>
               </div>
 
               <Link
@@ -72,7 +80,8 @@ export default function ServicesPage() {
               ))}
             </ul>
           </ScrollReveal>
-        ))}
+          )
+        })}
       </div>
 
       <ScrollReveal delay={0.05}>
@@ -86,7 +95,9 @@ export default function ServicesPage() {
       </ScrollReveal>
 
       <div className="mt-4 space-y-px overflow-hidden rounded-sm border border-ink/10 bg-ink/10">
-        {NETWORK_CATEGORIES.map((cat, i) => (
+        {NETWORK_CATEGORIES.map((cat, i) => {
+          const Icon = SERVICE_ICONS[cat.id]
+          return (
           <ScrollReveal
             key={cat.id}
             id={cat.id}
@@ -94,14 +105,17 @@ export default function ServicesPage() {
             className="scroll-mt-24 bg-paper p-6 transition-colors hover:bg-paper-dim sm:p-7"
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-widest text-slate">
-                  {cat.prefix}
+              <div className="flex gap-3">
+                <Icon className="h-5 w-5 shrink-0 text-slate" aria-hidden />
+                <div>
+                  <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-widest text-slate">
+                    {cat.prefix}
+                  </div>
+                  <h2 className="mt-1 font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
+                    {cat.name}
+                  </h2>
+                  <p className="mt-2 max-w-md text-sm text-slate">{cat.blurb}</p>
                 </div>
-                <h2 className="mt-1 font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
-                  {cat.name}
-                </h2>
-                <p className="mt-2 max-w-md text-sm text-slate">{cat.blurb}</p>
               </div>
 
               <Link
@@ -124,7 +138,8 @@ export default function ServicesPage() {
               ))}
             </ul>
           </ScrollReveal>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { SERVICE_CATEGORIES } from "@/lib/services"
-import { HeroLogoWatermark, HeroTerminal } from "@/components/HeroVisual"
+import { HeroLogoWatermark } from "@/components/HeroVisual"
+import { HeroGlobe } from "@/components/HeroGlobe"
+import { SERVICE_ICONS } from "@/lib/serviceIcons"
 import { ScrollReveal } from "@/components/ScrollReveal"
 import { ServiceMarquee } from "@/components/ServiceMarquee"
 import { TrustBadges } from "@/components/TrustBadges"
@@ -54,8 +56,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="hidden justify-self-end lg:block">
-            <HeroTerminal />
+          <div className="hidden justify-self-center lg:flex lg:items-center lg:justify-center">
+            <HeroGlobe />
           </div>
         </div>
 
@@ -94,29 +96,35 @@ export default function Home() {
         </ScrollReveal>
 
         <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-ink/10 bg-ink/10 sm:grid-cols-2">
-          {PILLAR_CATEGORIES.map((cat, i) => (
-            <ScrollReveal key={cat.id} delay={i * 0.06}>
-              <Link
-                href={`/services#${cat.id}`}
-                className="focus-ring group flex h-full flex-col justify-between bg-paper p-7 transition-colors hover:bg-ink hover:text-paper sm:p-9"
-              >
-                <div>
-                  <div className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-widest text-signal">
-                    {cat.prefix} · Core Pillar
+          {PILLAR_CATEGORIES.map((cat, i) => {
+            const Icon = SERVICE_ICONS[cat.id]
+            return (
+              <ScrollReveal key={cat.id} delay={i * 0.06}>
+                <Link
+                  href={`/services#${cat.id}`}
+                  className="focus-ring group flex h-full flex-col justify-between bg-paper p-7 transition-colors hover:bg-ink hover:text-paper sm:p-9"
+                >
+                  <div>
+                    <div className="flex h-11 w-11 items-center justify-center rounded-sm bg-ink/5 text-ink group-hover:bg-paper/10 group-hover:text-paper">
+                      <Icon className="h-5 w-5" aria-hidden />
+                    </div>
+                    <div className="mt-4 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-widest text-signal">
+                      {cat.prefix} · Core Pillar
+                    </div>
+                    <h3 className="mt-2 font-[family-name:var(--font-display)] text-xl font-bold leading-snug">
+                      {cat.name}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-slate group-hover:text-paper/60">
+                      {cat.blurb}
+                    </p>
                   </div>
-                  <h3 className="mt-2 font-[family-name:var(--font-display)] text-xl font-bold leading-snug">
-                    {cat.name}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate group-hover:text-paper/60">
-                    {cat.blurb}
-                  </p>
-                </div>
-                <div className="mt-6 font-[family-name:var(--font-mono)] text-xs text-slate group-hover:text-signal">
-                  {cat.items.length} services →
-                </div>
-              </Link>
-            </ScrollReveal>
-          ))}
+                  <div className="mt-6 font-[family-name:var(--font-mono)] text-xs text-slate group-hover:text-signal">
+                    {cat.items.length} services →
+                  </div>
+                </Link>
+              </ScrollReveal>
+            )
+          })}
         </div>
 
         <ScrollReveal delay={0.1}>
@@ -130,14 +138,17 @@ export default function Home() {
         </ScrollReveal>
 
         <div className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-ink/10 bg-ink/10 sm:grid-cols-2 lg:grid-cols-4">
-          {NETWORK_CATEGORIES.map((cat, i) => (
+          {NETWORK_CATEGORIES.map((cat, i) => {
+            const Icon = SERVICE_ICONS[cat.id]
+            return (
             <ScrollReveal key={cat.id} delay={(i % 4) * 0.05}>
               <Link
                 href={`/services#${cat.id}`}
                 className="focus-ring group flex h-full flex-col justify-between bg-paper-dim p-5 transition-colors hover:bg-ink hover:text-paper"
               >
                 <div>
-                  <div className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-slate group-hover:text-signal">
+                  <Icon className="h-5 w-5 text-ink/50 group-hover:text-signal" aria-hidden />
+                  <div className="mt-3 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-widest text-slate group-hover:text-signal">
                     {cat.prefix}
                   </div>
                   <h4 className="mt-1.5 font-[family-name:var(--font-display)] text-sm font-bold leading-snug">
@@ -149,7 +160,8 @@ export default function Home() {
                 </div>
               </Link>
             </ScrollReveal>
-          ))}
+            )
+          })}
         </div>
       </section>
 
